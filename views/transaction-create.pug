@@ -1,0 +1,8 @@
+form(method="post")
+    select(name="userId")
+        each user in users
+            option(value=user.id)= user.id
+    select(name="bookId")
+        each book in books
+            option(value=book.id)= book.id
+    button Create

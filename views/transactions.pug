@@ -1,0 +1,27 @@
+extends ./layouts/common
+
+block content
+    .container    
+        h1 Transactions
+
+        a(href="/transactions/create", class="btn btn-primary") Create
+        
+        if error
+            .alert.alert-danger.mt-3= error
+        table.table.mt-3
+            tr
+                th User ID
+                th Book ID
+                th Trạng thái
+                th Action
+            each transaction in transactions
+                tr
+                    td= transaction.userId
+                    td= transaction.bookId
+                    td
+                        if transaction.isComplete
+                            span.text-success Đã trả
+                        else
+                            span.text-danger Chưa trả
+                    td
+                        a.btn.btn-light(href="/transactions/" + transaction.id + "/complete") Hoàn thành

@@ -8,5 +8,14 @@ module.exports.add = function(req, res, next) {
         });
         return;
     }
+    
+    if (db.get('users').find({ email: req.body.email}).value()) {
+        res.render('users', {
+            error: 'Đã có tài khoản sử dụng email này.',
+            values: req.body,
+            users: db.get('users').value()
+        });
+        return;
+    }
     next();
 }

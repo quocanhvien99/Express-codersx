@@ -1,3 +1,4 @@
+var bcrypt = require('bcrypt');
 var shortid = require('shortid');
 var db = require('../db');
 
@@ -16,8 +17,14 @@ module.exports.edit = function(req, res) {
     });
    };
 module.exports.add = function(req, res) {    
+    const saltRounds = 10;
+    const myPlaintextPassword = req.body.passwd; 
     req.body.id = shortid.generate();
-    db.get('users').push(req.body).write();
+    bcrypt.hash(myPlaintextPassword, saltRounds).then(function(hash) {        
+        req.body.passwd = hash;
+        db.get('users').push(req.body).write();
+        
+    });   
     res.redirect('/users');       
 };
 module.exports.update = function(req, res) {    

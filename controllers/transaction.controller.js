@@ -2,8 +2,15 @@ var db = require('../db');
 var shortid = require('shortid');
 
 module.exports.index = function(req, res) {
+    var userid = req.signedCookies['user-id'];
+    var user = db.get('users').find({ id: userid }).value();    
+    if (user.isAdmin) {
+        var userTransactions = db.get('transactions').value();        
+    } else {
+        var userTransactions = db.get('transactions').find({ userId: userid }).value() ? db.get('transactions').filter({ userId: userid }).value() : '';
+    }    
     res.render('transactions', {
-        transactions: db.get('transactions').value()
+        transactions: userTransactions
     });
 };
 module.exports.create = function(req, res) {

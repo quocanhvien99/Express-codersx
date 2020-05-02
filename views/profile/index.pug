@@ -1,0 +1,20 @@
+extends ../layouts/common
+
+block content
+    .container
+        if msg
+            .alert.alert-success= msg
+        .row.justify-content-center
+            .col-md-4.d-flex.flex-column.justify-content-center            
+                img(src= user.avatar ? user.avatar : "https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png" class="rounded-circle mx-auto d-block" width="360" height="360" alt="avatar")                    
+                a.btn.btn-light(href="/profile/avatar") Change Avatar
+        .row.justify-content-center
+            .col-md-6
+                form(action="/profile" method="POST")
+                    .form-group
+                            label(for="email") Email
+                            input(id="email" type="email" name="email" class="form-control" value=values ? values.email : "")
+                    .form-group
+                        label(for="phone") Phone
+                        input(id="phone" type="tel" name="phone" class="form-control")            
+                    button(class="btn btn-primary") Submit

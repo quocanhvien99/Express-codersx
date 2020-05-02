@@ -1,5 +1,8 @@
 var bcrypt = require('bcrypt');
 var db = require('../db');
+var sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 
 module.exports.index = function(req, res) {
     res.render('login');
@@ -30,8 +33,17 @@ module.exports.post = function(req, res) {
         res.redirect('/');
         return;
     }
+    if (user.wrongLoginCount + 1 === 3) {
+        var msg = {
+            to: user.email,
+            from: 'quocanhvien99@gmail.com',
+            subject: 'Warning from quoc anh',
+            text: 'You have exceeded 3 attempts.',
+        };
+        sgMail.send(msg);
+    }
     if (user.wrongLoginCount) {        
-        db.get('users').find({ username: req.body.username }).assign({ wrongLoginCount: user.wrongLoginCount + 1 }).write();
+        db.get('users').find({ username: req.body.username }).assign({ wrongLoginCount: user.wrongLoginCount + 1 }).write();        
     } else {
         db.get('users').find({ username: req.body.username }).assign({ wrongLoginCount: 1 }).write();
     }

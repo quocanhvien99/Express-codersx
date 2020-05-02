@@ -1,10 +1,18 @@
 var bcrypt = require('bcrypt');
 var shortid = require('shortid');
 var db = require('../db');
+var pagination = require('./pagination.controller');
 
 module.exports.index = function(req, res) {
+    var page =  parseInt(req.query.page) || 1;
+    var totalPages = Math.ceil(db.get('users').size().value() / 5);
+    var previous = page > 0 ? page - 1 : null;
+    var next = page < totalPages ? page + 1 : null;     
     res.render('users', {
-        users: db.get('users').value()
+        users: pagination.content(db.get('users').value(), page),
+        pages: pagination.nav(page, totalPages),
+        previous: previous,
+        next: next
     });
 };
 module.exports.delete = function(req, res) {

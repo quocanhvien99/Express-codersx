@@ -1,5 +1,6 @@
 var db = require('../db');
 var shortid = require('shortid');
+var pagination = require('./pagination.controller');
 
 module.exports.index = function(req, res) {
     var userid = req.signedCookies['user-id'];
@@ -9,9 +10,17 @@ module.exports.index = function(req, res) {
     } else {
         var userTransactions = db.get('transactions').find({ userId: userid }).value() ? db.get('transactions').filter({ userId: userid }).value() : '';
     }    
+    var page =  parseInt(req.query.page) || 1;
+    var totalPages = Math.ceil(db.get('transactions').size().value() / 5);
+    var previous = page > 0 ? page - 1 : null;
+    var next = page < totalPages ? page + 1 : null;  
     res.render('transactions', {
-        transactions: userTransactions
+        transactions: pagination.content(userTransactions, page),
+        pages: pagination.nav(page, totalPages),
+        previous: previous,
+        next: next
     });
+
 };
 module.exports.create = function(req, res) {
     res.render('transaction-create', {

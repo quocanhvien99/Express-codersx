@@ -1,7 +1,6 @@
 require('dotenv').config();
-<<<<<<< HEAD
-
 const express = require('express');
+
 var cookieParser = require('cookie-parser');
 var mongoose = require('mongoose');
 
@@ -11,10 +10,7 @@ mongoose.connect(process.env.MONGO_URL, {
 });
 
 var testRoute = require('./routes/test.route');
-=======
-const express = require('express');
-var cookieParser = require('cookie-parser');
->>>>>>> b07cddc076579264504151fc9f6cef1062128eb6
+
 var indexRoute = require('./routes/index.route');
 var userRoute = require('./routes/user.route'); 
 var bookRoute = require('./routes/book.route.js');
@@ -42,9 +38,7 @@ app.use('/transactions', requireAuth.auth, transactionRoute);
 app.use('/login', loginRoute);
 app.use('/profile', requireAuth.auth, profileRoute);
 app.use('/cart', cartRoute);
-<<<<<<< HEAD
+
 app.use('/test', testRoute);
-=======
->>>>>>> b07cddc076579264504151fc9f6cef1062128eb6
 
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));

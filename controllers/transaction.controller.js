@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 var pagination = require('./pagination.controller');
 var Transaction = require('../models/transaction.model');
 var Book = require('../models/book.model');
@@ -13,6 +14,22 @@ module.exports.index = async function(req, res) {
     }    
     var page =  parseInt(req.query.page) || 1;
     var totalPages = Math.ceil(await Transaction.estimatedDocumentCount() / 5);
+=======
+var db = require('../db');
+var shortid = require('shortid');
+var pagination = require('./pagination.controller');
+
+module.exports.index = function(req, res) {
+    var userid = req.signedCookies['user-id'];
+    var user = db.get('users').find({ id: userid }).value();    
+    if (user.isAdmin) {
+        var userTransactions = db.get('transactions').value();        
+    } else {
+        var userTransactions = db.get('transactions').find({ userId: userid }).value() ? db.get('transactions').filter({ userId: userid }).value() : '';
+    }    
+    var page =  parseInt(req.query.page) || 1;
+    var totalPages = Math.ceil(db.get('transactions').size().value() / 5);
+>>>>>>> b07cddc076579264504151fc9f6cef1062128eb6
     var previous = page > 0 ? page - 1 : null;
     var next = page < totalPages ? page + 1 : null;  
     res.render('transactions', {

@@ -1,0 +1,28 @@
+extends ../layouts/common
+
+block content
+    .container
+        .row
+            .col
+                h1 Books
+                form(action="/books/manage/add" method="POST" enctype="multipart/form-data")
+                    .form-group
+                        label(for="cover") Cover
+                        input(id="cover" type="file" name="cover" class="form-control-file")
+                    .form-group
+                        label Title
+                        input(type="text", name="title", class="form-control")
+                    .form-group
+                        label Description
+                        input(type="text", name="description", class="form-control")
+                    button(class="btn btn-primary") Add
+
+                ul
+                    each book in books
+                        li
+                            span= book.title  
+                            span &nbsp;
+                            a(href="/books/manage/" + book.id +"/edit") edit                      
+                            a(href="/books/manage/" + book.id +"/delete") delete
+    
+

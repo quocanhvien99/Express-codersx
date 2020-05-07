@@ -25,3 +25,21 @@ block content
                             span.text-danger Chưa trả
                     td
                         a.btn.btn-light(href="/transactions/" + transaction.id + "/complete") Hoàn thành
+        nav(aria-label='Page navigation example')
+            ul.pagination            
+                if previous
+                    li.page-item
+                        a.page-link(href='/transactions?page=' + previous) Previous
+                else
+                    li.page-item.disabled
+                        a.page-link(href='/transactions?page=' + previous) Previous                
+                each page in pages
+                    li.page-item
+                        a.page-link(href="/transactions?page=" + page)= page                
+                li.page-item                    
+                    if next
+                        li.page-item
+                            a.page-link(href='/transactions?page=' + next) Next
+                    else
+                        li.page-item.disabled
+                            a.page-link(href='/transactions?page=' + next) Next

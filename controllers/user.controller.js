@@ -1,13 +1,21 @@
-var shortid = require('shortid');
-var db = require('../db');
+var bcrypt = require('bcrypt');
+var pagination = require('./pagination.controller');
+var User = require('../models/user.model');
 
-module.exports.index = function(req, res) {
+module.exports.index = async function(req, res) {
+    var page =  parseInt(req.query.page) || 1;
+    var totalPages = Math.ceil(await User.estimatedDocumentCount() / 5);
+    var previous = page > 0 ? page - 1 : null;
+    var next = page < totalPages ? page + 1 : null;     
     res.render('users', {
-        users: db.get('users').value()
+        users: pagination.content(await User.find(), page),
+        pages: pagination.nav(page, totalPages),
+        previous: previous,
+        next: next
     });
 };
-module.exports.delete = function(req, res) {
-    db.get('users').remove({id: req.params.id}).write();
+module.exports.delete = async function(req, res) {
+    await User.findByIdAndDelete(req.params.id);
     res.redirect('back');
 };
 module.exports.edit = function(req, res) {
@@ -15,21 +23,17 @@ module.exports.edit = function(req, res) {
         id: req.params.id
     });
    };
-module.exports.add = function(req, res) {
-    if (req.body.username.length > 30) {
-        res.render('users', {
-            error: 'Username không được nhập quá 30 ký tự.',
-            values: req.body,
-            users: db.get('users').value()
-        });
-    } else {
-        req.body.id = shortid.generate();
-        db.get('users').push(req.body).write();
-        res.redirect('/users');
-    }    
+module.exports.add = async function(req, res) {    
+    const saltRounds = 10;
+    const myPlaintextPassword = req.body.passwd;     
+    var hash = await bcrypt.hash(myPlaintextPassword, saltRounds);  
+    console.log(hash);
+    req.body.passwd = hash;
+    User.create(req.body);
+    res.redirect('/users');       
 };
-module.exports.update = function(req, res) {    
-    db.get('users').find({ id: req.params.id }).assign({ email: req.body.email }).write();
-    db.get('users').find({ id: req.params.id }).assign({ passwd: req.body.passwd }).write();    
+module.exports.update = async function(req, res) {
+    await User.findByIdAndUpdate(req.params.id, { email: req.body.email });    
+    await User.findByIdAndUpdate(req.params.id, { passwd: req.body.passwd });   
     res.redirect('/users');
 };

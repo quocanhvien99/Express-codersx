@@ -1,33 +1,48 @@
-var db = require('../db');
-var shortid = require('shortid');
+var pagination = require('./pagination.controller');
+var Transaction = require('../models/transaction.model');
+var Book = require('../models/book.model');
+var User = require('../models/user.model');
 
-module.exports.index = function(req, res) {
+module.exports.index = async function(req, res) {
+    var userid = req.signedCookies['user-id'];
+    var user = await User.findById(userid);
+    if (user.isAdmin) {      
+        var userTransactions = await Transaction.find();
+    } else {
+        var userTransactions = await Transaction.find({ userId: userid }) ? await Transaction.find({ userId: userid }) : '';
+    }    
+    var page =  parseInt(req.query.page) || 1;
+    var totalPages = Math.ceil(await Transaction.estimatedDocumentCount() / 5);
+    var previous = page > 0 ? page - 1 : null;
+    var next = page < totalPages ? page + 1 : null;  
     res.render('transactions', {
-        transactions: db.get('transactions').value()
+        transactions: pagination.content(userTransactions, page),
+        pages: pagination.nav(page, totalPages),
+        previous: previous,
+        next: next
     });
+
 };
-module.exports.create = function(req, res) {
+module.exports.create = async function(req, res) {
     res.render('transaction-create', {
-        books: db.get('books').value(),
-        users: db.get('users').value()
+        books: await Book.find(),
+        users: await User.find()
     });
 };
-module.exports.postCreate = function(req, res) {
-    req.body.id = shortid.generate();
+module.exports.postCreate = async function(req, res) {    
     req.body.isComplete = false;
-    db.get('transactions').push(req.body).write();
+    await Transaction.create(req.body);
     res.redirect('/transactions');
 };
-module.exports.complete = function(req, res) {
-
-    if (!db.get('transactions').find({ id: req.params.id }).value()) {
+module.exports.complete = async function(req, res) {  
+    var id = await Transaction.findById(req.params.id);
+    if (!id) {
         res.render('transactions', {
-            error: 'User id không tồn tại.',
-            transactions: db.get('transactions').value()
+            error: 'Id không tồn tại.',
+            transactions: Transaction.find()
         });
-    } else {        
-        db.get('transactions').find({ id: req.params.id }).assign({ isComplete: true }).write();
+    } else {   
+        await Transaction.findByIdAndUpdate(req.params.id, { isComplete: true });
         res.redirect('/transactions');
-    }
-    
+    }    
 };

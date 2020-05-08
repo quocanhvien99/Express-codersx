@@ -11,6 +11,7 @@ mongoose.connect(process.env.MONGO_URL, {
 
 var testRoute = require('./routes/test.route');
 
+var apiRoute = require('./api/api.route');
 var indexRoute = require('./routes/index.route');
 var userRoute = require('./routes/user.route'); 
 var bookRoute = require('./routes/book.route.js');
@@ -31,7 +32,11 @@ app.use(express.urlencoded({ extended: true })) // for parsing application/x-www
 app.use(cookieParser(process.env.SESSION_SECRET));
 app.use(express.static('public'));
 
-app.use('/', session, cartTotal, indexRoute);
+app.use('/api', apiRoute);
+
+app.use(session);
+app.use(cartTotal);
+app.use('/', indexRoute);
 app.use('/users', userRoute);
 app.use('/books', bookRoute);
 app.use('/transactions', requireAuth.auth, transactionRoute);

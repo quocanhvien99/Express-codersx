@@ -45,7 +45,7 @@ app.use('/transactions', requireAuth.auth, transactionRoute);
 app.use('/login', loginRoute);
 app.use('/profile', requireAuth.auth, profileRoute);
 app.use('/cart', cartRoute);
-app.use('/shop', shopRoute);
+app.use('/shops', shopRoute);
 
 app.use('/test', testRoute);
 

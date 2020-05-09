@@ -2,10 +2,10 @@ var cloudinary = require('cloudinary');
 var Book = require('../models/book.model');
 
 module.exports.index = async function(req, res) {
-    var books = await Book.find();    
+    var books = await Book.find();   
     res.render('books/index', {        
         books: books
-    });
+    });      
 };
 module.exports.manage = async function(req, res) {
     var books = await Book.find();  

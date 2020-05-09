@@ -18,11 +18,11 @@ module.exports.add = function(req, res, next) {
         return;
     }
     
-    if (db.get('users').find({ email: req.body.email}).value()) {
+    if (User.find({ email: req.body.email})) {
         res.render('users', {
             error: 'Đã có tài khoản sử dụng email này.',
             values: req.body,
-            users: db.get('users').value()
+            users: User.find()
         });
         return;
     }

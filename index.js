@@ -6,7 +6,8 @@ var mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
 });
 
 var testRoute = require('./routes/test.route');
@@ -24,7 +25,7 @@ var cartRoute = require('./routes/cart.route');
 var cartTotal = require('./middlewares/cartTotal.middleware');
 
 const app = express();
-const port = 3000
+const port = process.env.PORT || 3000;
 app.set('views', './views') // specify the views directory
 app.set('view engine', 'pug') // register the template engine
 app.use(express.json()) // for parsing application/json

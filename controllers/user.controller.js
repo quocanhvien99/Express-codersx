@@ -10,7 +10,6 @@ module.exports.index = async function(req, res) {
     var next = page < totalPages ? page + 1 : null;     
     res.render('users', {
         users: pagination.content(await User.find(), page),
-
         pages: pagination.nav(page, totalPages),
         previous: previous,
         next: next
@@ -29,8 +28,7 @@ module.exports.edit = function(req, res) {
 module.exports.add = async function(req, res) {    
     const saltRounds = 10;
     const myPlaintextPassword = req.body.passwd;     
-    var hash = await bcrypt.hash(myPlaintextPassword, saltRounds);  
-    console.log(hash);
+    var hash = await bcrypt.hash(myPlaintextPassword, saltRounds); 
     req.body.passwd = hash;
     User.create(req.body);
 

@@ -1,0 +1,6 @@
+var express = require('express');
+var router = express.Router();
+
+router.get('/', function(res, req) {
+    res.send("<h1>Mình đang chạy deadline với thi giữa kì ở trường nên lúc rảnh chỉ xem được bài giảng, bài này sẽ làm sau ^.^</h1>");
+});

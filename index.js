@@ -20,6 +20,7 @@ var transactionRoute = require('./routes/transaction.route');
 var loginRoute = require('./routes/login.route');
 var requireAuth = require('./validate/auth.validate');
 var profileRoute = require('./routes/profile.route');
+var shopRoute = require('./routes/shop.route');
 var session = require('./validate/session.validate');
 var cartRoute = require('./routes/cart.route');
 var cartTotal = require('./middlewares/cartTotal.middleware');
@@ -44,6 +45,7 @@ app.use('/transactions', requireAuth.auth, transactionRoute);
 app.use('/login', loginRoute);
 app.use('/profile', requireAuth.auth, profileRoute);
 app.use('/cart', cartRoute);
+app.use('/shop', shopRoute);
 
 app.use('/test', testRoute);
 
